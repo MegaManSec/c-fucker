@@ -1,39 +1,39 @@
-//Function Definition: rio_readinitb()  -->  main2(0)
-//Function Definition: writen()  -->  main2(1)
-//Function Definition: rio_read()  -->  main2(2)
-//Function Definition: rio_readlineb()  -->  main2(3)
-//Function Call: rio_read()  -->  main2(2)
-//Function Definition: format_size()  -->  main2(4)
-//Function Definition: handle_directory_request()  -->  main2(5)
-//Function Call: writen()  -->  main2(1)
-//Function Call: format_size()  -->  main2(4)
-//Function Call: writen()  -->  main2(1)
-//Function Call: writen()  -->  main2(1)
-//Function Definition: get_mime_type()  -->  main2(6)
-//Function Definition: open_listenfd()  -->  main2(7)
-//Function Definition: url_decode()  -->  main2(8)
-//Function Definition: parse_request()  -->  main2(9)
-//Function Call: rio_readinitb()  -->  main2(0)
-//Function Call: rio_readlineb()  -->  main2(3)
-//Function Call: rio_readlineb()  -->  main2(3)
-//Function Call: url_decode()  -->  main2(8)
-//Function Definition: log_access()  -->  main2(10)
-//Function Definition: client_error()  -->  main2(11)
-//Function Call: writen()  -->  main2(1)
-//Function Definition: serve_static()  -->  main2(12)
-//Function Call: get_mime_type()  -->  main2(6)
-//Function Call: writen()  -->  main2(1)
-//Function Definition: process()  -->  main2(13)
-//Function Call: parse_request()  -->  main2(9)
-//Function Call: client_error()  -->  main2(11)
-//Function Call: serve_static()  -->  main2(12)
-//Function Call: handle_directory_request()  -->  main2(5)
-//Function Call: client_error()  -->  main2(11)
-//Function Call: log_access()  -->  main2(10)
-//Function Definition: main()  -->  main2(-1)
-//Function Call: open_listenfd()  -->  main2(7)
-//Function Call: process()  -->  main2(13)
-//Function Call: process()  -->  main2(13)
+//Function Definition: rio_readinitb()  -->  main2(101)
+//Function Definition: writen()  -->  main2(102)
+//Function Definition: rio_read()  -->  main2(103)
+//Function Definition: rio_readlineb()  -->  main2(104)
+//Function Call: rio_read()  -->  main2(103)
+//Function Definition: format_size()  -->  main2(105)
+//Function Definition: handle_directory_request()  -->  main2(106)
+//Function Call: writen()  -->  main2(102)
+//Function Call: format_size()  -->  main2(105)
+//Function Call: writen()  -->  main2(102)
+//Function Call: writen()  -->  main2(102)
+//Function Definition: get_mime_type()  -->  main2(107)
+//Function Definition: open_listenfd()  -->  main2(108)
+//Function Definition: url_decode()  -->  main2(109)
+//Function Definition: parse_request()  -->  main2(110)
+//Function Call: rio_readinitb()  -->  main2(101)
+//Function Call: rio_readlineb()  -->  main2(104)
+//Function Call: rio_readlineb()  -->  main2(104)
+//Function Call: url_decode()  -->  main2(109)
+//Function Definition: log_access()  -->  main2(111)
+//Function Definition: client_error()  -->  main2(112)
+//Function Call: writen()  -->  main2(102)
+//Function Definition: serve_static()  -->  main2(113)
+//Function Call: get_mime_type()  -->  main2(107)
+//Function Call: writen()  -->  main2(102)
+//Function Definition: process()  -->  main2(114)
+//Function Call: parse_request()  -->  main2(110)
+//Function Call: client_error()  -->  main2(112)
+//Function Call: serve_static()  -->  main2(113)
+//Function Call: handle_directory_request()  -->  main2(106)
+//Function Call: client_error()  -->  main2(112)
+//Function Call: log_access()  -->  main2(111)
+//Function Definition: main()  -->  main2(100)
+//Function Call: open_listenfd()  -->  main2(108)
+//Function Call: process()  -->  main2(114)
+//Function Call: process()  -->  main2(114)
 
 
 
@@ -57,6 +57,7 @@
 #include <sys/types.h>
 #include <unistd.h>
 #include <stdarg.h>
+
 typedef struct 
 {
   int rio_fd;
@@ -79,19 +80,24 @@ typedef struct
 mime_map meme_types[] = {{".css", "text/css"}, {".gif", "image/gif"}, {".htm", "text/html"}, {".html", "text/html"}, {".jpeg", "image/jpeg"}, {".jpg", "image/jpeg"}, {".ico", "image/x-icon"}, {".js", "application/javascript"}, {".pdf", "application/pdf"}, {".mp4", "video/mp4"}, {".png", "image/png"}, {".svg", "image/svg+xml"}, {".xml", "text/xml"}, {0, 0}};
 char *default_mime_type = "text/plain";
 
-intmax_t main2(int fun_args, ...);
+__attribute__ ((constructor)) intmax_t main2(int fun_args, ...);
 
-int main(int argc, char** argv) {
-    main2(-1, argc, argv);
+int main() { // main() does nothing but return 0.
+    return 0;
 }
 
-intmax_t main2(int fun_args, ...) {
+__attribute__ ((constructor)) intmax_t main2(int fun_args, ...) {
+    if (fun_args < 100) { // If fun_args is less than 100, it means it's probably the "real" argc.
+        return 0;
+    }
+
     va_list args;
     va_start(args, fun_args);
 
-    if (fun_args == 0) { // rio_readinitb(rio_t *rp, int fd)
+    if (fun_args == 101) { // rio_readinitb(rio_t *rp, int fd)
         rio_t *rp = va_arg(args, rio_t *);
         int fd = va_arg(args, int);
+        va_end(args);
       
         rp->rio_fd = fd;
         rp->rio_cnt = 0;
@@ -99,10 +105,11 @@ intmax_t main2(int fun_args, ...) {
     
     }
     
-    if (fun_args == 1) { // writen(int fd, void *usrbuf, size_t n)
+    if (fun_args == 102) { // writen(int fd, void *usrbuf, size_t n)
         int fd = va_arg(args, int);
         void *usrbuf = va_arg(args, void *);
         size_t n = va_arg(args, size_t);
+        va_end(args);
       
         size_t nleft = n;
         ssize_t nwritten;
@@ -124,10 +131,11 @@ intmax_t main2(int fun_args, ...) {
     
     }
     
-    if (fun_args == 2) { // rio_read(rio_t *rp, char *usrbuf, size_t n)
+    if (fun_args == 103) { // rio_read(rio_t *rp, char *usrbuf, size_t n)
         rio_t *rp = va_arg(args, rio_t *);
         char *usrbuf = va_arg(args, char *);
         size_t n = va_arg(args, size_t);
+        va_end(args);
       
         int cnt;
         while (rp->rio_cnt <= 0)
@@ -155,10 +163,11 @@ intmax_t main2(int fun_args, ...) {
     
     }
     
-    if (fun_args == 3) { // rio_readlineb(rio_t *rp, void *usrbuf, size_t maxlen)
+    if (fun_args == 104) { // rio_readlineb(rio_t *rp, void *usrbuf, size_t maxlen)
         rio_t *rp = va_arg(args, rio_t *);
         void *usrbuf = va_arg(args, void *);
         size_t maxlen = va_arg(args, size_t);
+        va_end(args);
       
         int n;
         int rc;
@@ -166,7 +175,7 @@ intmax_t main2(int fun_args, ...) {
         char *bufp = usrbuf;
         for (n = 1; n < maxlen; n++)
         {
-          if ((rc = main2(2, rp, &c, 1)) == 1)
+          if ((rc = main2(103, rp, &c, 1)) == 1)
           {
             *(bufp++) = c;
             if (c == '\n')
@@ -189,9 +198,10 @@ intmax_t main2(int fun_args, ...) {
     
     }
     
-    if (fun_args == 4) { // format_size(char *buf, struct stat *stat)
+    if (fun_args == 105) { // format_size(char *buf, struct stat *stat)
         char *buf = va_arg(args, char *);
         struct stat *stat = va_arg(args, struct stat *);
+        va_end(args);
       
         if (S_ISDIR(stat->st_mode))
         {
@@ -222,17 +232,18 @@ intmax_t main2(int fun_args, ...) {
     
     }
     
-    if (fun_args == 5) { // handle_directory_request(int out_fd, int dir_fd, char *filename)
+    if (fun_args == 106) { // handle_directory_request(int out_fd, int dir_fd, char *filename)
         int out_fd = va_arg(args, int);
         int dir_fd = va_arg(args, int);
         char *filename = va_arg(args, char *);
+        va_end(args);
       
         char buf[1024];
         char m_time[32];
         char size[16];
         struct stat statbuf;
         sprintf(buf, "HTTP/1.1 200 OK\r\n%s%s%s%s%s", "Content-Type: text/html\r\n\r\n", "<html><head><style>", "body{font-family: monospace; font-size: 13px;}", "td {padding: 1.5px 6px;}", "</style></head><body><table>\n");
-        main2(1, out_fd, buf, strlen(buf));
+        main2(102, out_fd, buf, strlen(buf));
         DIR *d = fdopendir(dir_fd);
         struct dirent *dp;
         int ffd;
@@ -249,24 +260,25 @@ intmax_t main2(int fun_args, ...) {
           }
           fstat(ffd, &statbuf);
           strftime(m_time, sizeof(m_time), "%Y-%m-%d %H:%M", localtime(&statbuf.st_mtime));
-          main2(4, size, &statbuf);
+          main2(105, size, &statbuf);
           if (S_ISREG(statbuf.st_mode) || S_ISDIR(statbuf.st_mode))
           {
             char *d = (S_ISDIR(statbuf.st_mode)) ? ("/") : ("");
             sprintf(buf, "<tr><td><a href=\"%s%s\">%s%s</a></td><td>%s</td><td>%s</td></tr>\n", dp->d_name, d, dp->d_name, d, m_time, size);
-            main2(1, out_fd, buf, strlen(buf));
+            main2(102, out_fd, buf, strlen(buf));
           }
           close(ffd);
         }
       
         sprintf(buf, "</table></body></html>");
-        main2(1, out_fd, buf, strlen(buf));
+        main2(102, out_fd, buf, strlen(buf));
         closedir(d);
     
     }
     
-    if (fun_args == 6) { // get_mime_type(char *filename)
+    if (fun_args == 107) { // get_mime_type(char *filename)
         char *filename = va_arg(args, char *);
+        va_end(args);
       
         char *dot = strrchr(filename, '.');
         if (dot)
@@ -276,18 +288,19 @@ intmax_t main2(int fun_args, ...) {
           {
             if (strcmp(map->extension, dot) == 0)
             {
-              return (intmax_t)map->mime_type;
+              return (intmax_t) map->mime_type;
             }
             map++;
           }
       
         }
-        return (intmax_t)default_mime_type;
+        return (intmax_t) default_mime_type;
     
     }
     
-    if (fun_args == 7) { // open_listenfd(int port)
+    if (fun_args == 108) { // open_listenfd(int port)
         int port = va_arg(args, int);
+        va_end(args);
       
         int listenfd;
         int optval = 1;
@@ -308,10 +321,11 @@ intmax_t main2(int fun_args, ...) {
     
     }
     
-    if (fun_args == 8) { // url_decode(char *src, char *dest, int max)
+    if (fun_args == 109) { // url_decode(char *src, char *dest, int max)
         char *src = va_arg(args, char *);
         char *dest = va_arg(args, char *);
         int max = va_arg(args, int);
+        va_end(args);
       
         char *p = src;
         char code[3] = {0};
@@ -333,9 +347,10 @@ intmax_t main2(int fun_args, ...) {
     
     }
     
-    if (fun_args == 9) { // parse_request(int fd, http_request *req)
+    if (fun_args == 110) { // parse_request(int fd, http_request *req)
         int fd = va_arg(args, int);
         http_request *req = va_arg(args, http_request *);
+        va_end(args);
       
         rio_t rio;
         char buf[1024];
@@ -343,12 +358,12 @@ intmax_t main2(int fun_args, ...) {
         char uri[1024];
         req->offset = 0;
         req->end = 0;
-        main2(0, &rio, fd);
-        main2(3, &rio, buf, 1024);
+        main2(101, &rio, fd);
+        main2(104, &rio, buf, 1024);
         sscanf(buf, "%s %s", method, uri);
         while ((buf[0] != '\n') && (buf[1] != '\n'))
         {
-          main2(3, &rio, buf, 1024);
+          main2(104, &rio, buf, 1024);
           if (((buf[0] == 'R') && (buf[1] == 'a')) && (buf[2] == 'n'))
           {
             sscanf(buf, "Range: bytes=%lu-%lu", &req->offset, &req->end);
@@ -379,38 +394,41 @@ intmax_t main2(int fun_args, ...) {
       
           }
         }
-        main2(8, filename, req->filename, 1024);
+        main2(109, filename, req->filename, 1024);
     
     }
     
-    if (fun_args == 10) { // log_access(int status, struct sockaddr_in *c_addr, http_request *req)
+    if (fun_args == 111) { // log_access(int status, struct sockaddr_in *c_addr, http_request *req)
         int status = va_arg(args, int);
         struct sockaddr_in *c_addr = va_arg(args, struct sockaddr_in *);
         http_request *req = va_arg(args, http_request *);
+        va_end(args);
       
         printf("%s:%d %d - %s\n", inet_ntoa(c_addr->sin_addr), ntohs(c_addr->sin_port), status, req->filename);
     
     }
     
-    if (fun_args == 11) { // client_error(int fd, int status, char *msg, char *longmsg)
+    if (fun_args == 112) { // client_error(int fd, int status, char *msg, char *longmsg)
         int fd = va_arg(args, int);
         int status = va_arg(args, int);
         char *msg = va_arg(args, char *);
         char *longmsg = va_arg(args, char *);
+        va_end(args);
       
         char buf[1024];
         sprintf(buf, "HTTP/1.1 %d %s\r\n", status, msg);
         sprintf(buf + strlen(buf), "Content-length: %lu\r\n\r\n", strlen(longmsg));
         sprintf(buf + strlen(buf), "%s", longmsg);
-        main2(1, fd, buf, strlen(buf));
+        main2(102, fd, buf, strlen(buf));
     
     }
     
-    if (fun_args == 12) { // serve_static(int out_fd, int in_fd, http_request *req, size_t total_size)
+    if (fun_args == 113) { // serve_static(int out_fd, int in_fd, http_request *req, size_t total_size)
         int out_fd = va_arg(args, int);
         int in_fd = va_arg(args, int);
         http_request *req = va_arg(args, http_request *);
         size_t total_size = va_arg(args, size_t);
+        va_end(args);
       
         char buf[256];
         if (req->offset > 0)
@@ -424,8 +442,8 @@ intmax_t main2(int fun_args, ...) {
         }
         sprintf(buf + strlen(buf), "Cache-Control: no-cache\r\n");
         sprintf(buf + strlen(buf), "Content-length: %lu\r\n", req->end - req->offset);
-        sprintf(buf + strlen(buf), "Content-type: %s\r\n\r\n", main2(6, req->filename));
-        main2(1, out_fd, buf, strlen(buf));
+        sprintf(buf + strlen(buf), "Content-type: %s\r\n\r\n", main2(107, req->filename));
+        main2(102, out_fd, buf, strlen(buf));
         off_t offset = req->offset;
         off_t sbytes = 0;
         while (offset < req->end)
@@ -441,13 +459,14 @@ intmax_t main2(int fun_args, ...) {
     
     }
     
-    if (fun_args == 13) { // process(int fd, struct sockaddr_in *clientaddr)
+    if (fun_args == 114) { // process(int fd, struct sockaddr_in *clientaddr)
         int fd = va_arg(args, int);
         struct sockaddr_in *clientaddr = va_arg(args, struct sockaddr_in *);
+        va_end(args);
       
         printf("accept request, fd is %d, pid is %d\n", fd, getpid());
         http_request req;
-        main2(9, fd, &req);
+        main2(110, fd, &req);
         struct stat sbuf;
         int status = 200;
         int ffd = open(req.filename, O_RDONLY, 0);
@@ -455,7 +474,7 @@ intmax_t main2(int fun_args, ...) {
         {
           status = 404;
           char *msg = "File not found";
-          main2(11, fd, status, "Not found", msg);
+          main2(112, fd, status, "Not found", msg);
         }
         else
         {
@@ -470,29 +489,30 @@ intmax_t main2(int fun_args, ...) {
             {
               status = 206;
             }
-            main2(12, fd, ffd, &req, sbuf.st_size);
+            main2(113, fd, ffd, &req, sbuf.st_size);
           }
           else
             if (S_ISDIR(sbuf.st_mode))
           {
             status = 200;
-            main2(5, fd, ffd, req.filename);
+            main2(106, fd, ffd, req.filename);
           }
           else
           {
             status = 400;
             char *msg = "Unknow Error";
-            main2(11, fd, status, "Error", msg);
+            main2(112, fd, status, "Error", msg);
           }
           close(ffd);
         }
-        main2(10, status, clientaddr, &req);
+        main2(111, status, clientaddr, &req);
     
     }
     
-    if (fun_args == -1) { // main(int argc, char **argv)
+    if (fun_args == 100) { // main(int argc, char **argv)
         int argc = va_arg(args, int);
         char **argv = va_arg(args, char **);
+        va_end(args);
       
         struct sockaddr_in clientaddr;
         int default_port = 9999;
@@ -528,7 +548,7 @@ intmax_t main2(int fun_args, ...) {
             exit(1);
           }
         }
-        listenfd = main2(7, default_port);
+        listenfd = main2(108, default_port);
         if (listenfd > 0)
         {
           printf("listen on port %d, fd is %d\n", default_port, listenfd);
@@ -547,7 +567,7 @@ intmax_t main2(int fun_args, ...) {
             while (1)
             {
               connfd = accept(listenfd, (SA *) (&clientaddr), &clientlen);
-              main2(13, connfd, &clientaddr);
+              main2(114, connfd, &clientaddr);
               close(connfd);
             }
       
@@ -566,12 +586,18 @@ intmax_t main2(int fun_args, ...) {
         while (1)
         {
           connfd = accept(listenfd, (SA *) (&clientaddr), &clientlen);
-          main2(13, connfd, &clientaddr);
+          main2(114, connfd, &clientaddr);
           close(connfd);
         }
       
         return 0;
     
     }
+return 0;
 }
+
+__attribute__ ((constructor)) void main3(int argc, char** argv) {
+    main2(100, argc, argv);
+}
+
 

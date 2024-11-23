@@ -11,7 +11,7 @@ class FunctionTransformer(c_ast.NodeVisitor):
     def __init__(self):
         self.transformed_code = []
         self.generator = c_generator.CGenerator()
-        self.fun_args = 0
+        self.fun_args = 101
         self.transformed_funcs = []
 
     def nonvisit(self, ast):
@@ -35,12 +35,13 @@ class FunctionTransformer(c_ast.NodeVisitor):
 
     def visit_FuncDef(self, node):
         func_name = node.decl.name
+#        print(node.decl.type) # TODO: Use this to get the type and print it, too
         params = node.decl.type.args.params if node.decl.type.args else []
 
         if func_name == "main":
-            transformed_func = f"if (fun_args == -1) {{ // {func_name}("
-            self.transformed_funcs.append([func_name, -1])
-            print(f"//Function Definition: {func_name}()  -->  main2(-1)")
+            transformed_func = f"if (fun_args == 100) {{ // {func_name}("
+            self.transformed_funcs.append([func_name, 100])
+            print(f"//Function Definition: {func_name}()  -->  main2(100)")
         else:
             transformed_func = f"if (fun_args == {self.fun_args}) {{ // {func_name}("
             self.transformed_funcs.append([func_name, self.fun_args])
@@ -67,8 +68,7 @@ class FunctionTransformer(c_ast.NodeVisitor):
 
             transformed_func += f"    {param_decl} = va_arg(args, {param_decl_short});\n"
 
-        if len(params) > 0:
-            transformed_func += f"    va_end(args);\n"
+        transformed_func += f"    va_end(args);\n"
 
         self.check_for_function_calls(node)
 
@@ -146,19 +146,27 @@ def main(input_file):
     transformed_code = '\n'.join(transformed_code)
 
     code_beginning = """
-intmax_t main2(int fun_args, ...);
+__attribute__ ((constructor)) intmax_t main2(int fun_args, ...);
 
-int main(int argc, char** argv) {
-    main2(-1, argc, argv);
+int main() { // main() does nothing but return 0.
+    return 0;
 }
 
-intmax_t main2(int fun_args, ...) {
+__attribute__ ((constructor)) intmax_t main2(int fun_args, ...) {
+    if (fun_args < 100) { // If fun_args is less than 100, it means it's probably the "real" argc.
+        return 0;
+    }
+
     va_list args;
     va_start(args, fun_args);
 
 """
+    code_ending = """
+__attribute__ ((constructor)) void main3(int argc, char** argv) {
+    main2(100, argc, argv);
+}""" # XXX: We could probably turn main3 into a variadic function too and call main3 from main2 instead of main2 every time.
 
-    print(code_beginning + transformed_code + "\n}\n")
+    print(code_beginning + transformed_code + "\nreturn 0;\n}\n" + code_ending) # Why does not returning cause uninitalized memory read?
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
