@@ -1,0 +1,1 @@
+# PYTHONPATH=../pycparser/ python3.11 c-fucker.py examples/printdatetime.c  > examples/printdatetime-fucked.c
