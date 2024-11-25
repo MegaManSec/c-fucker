@@ -1,39 +1,39 @@
-//Function Definition: rio_readinitb()  -->  main2(101)
-//Function Definition: writen()  -->  main2(102)
-//Function Definition: rio_read()  -->  main2(103)
-//Function Definition: rio_readlineb()  -->  main2(104)
-//Function Call: rio_read()  -->  main2(103)
-//Function Definition: format_size()  -->  main2(105)
-//Function Definition: handle_directory_request()  -->  main2(106)
-//Function Call: writen()  -->  main2(102)
-//Function Call: format_size()  -->  main2(105)
-//Function Call: writen()  -->  main2(102)
-//Function Call: writen()  -->  main2(102)
-//Function Definition: get_mime_type()  -->  main2(107)
-//Function Definition: open_listenfd()  -->  main2(108)
-//Function Definition: url_decode()  -->  main2(109)
-//Function Definition: parse_request()  -->  main2(110)
-//Function Call: rio_readinitb()  -->  main2(101)
-//Function Call: rio_readlineb()  -->  main2(104)
-//Function Call: rio_readlineb()  -->  main2(104)
-//Function Call: url_decode()  -->  main2(109)
-//Function Definition: log_access()  -->  main2(111)
-//Function Definition: client_error()  -->  main2(112)
-//Function Call: writen()  -->  main2(102)
-//Function Definition: serve_static()  -->  main2(113)
-//Function Call: get_mime_type()  -->  main2(107)
-//Function Call: writen()  -->  main2(102)
-//Function Definition: process()  -->  main2(114)
-//Function Call: parse_request()  -->  main2(110)
-//Function Call: client_error()  -->  main2(112)
-//Function Call: serve_static()  -->  main2(113)
-//Function Call: handle_directory_request()  -->  main2(106)
-//Function Call: client_error()  -->  main2(112)
-//Function Call: log_access()  -->  main2(111)
-//Function Definition: main()  -->  main2(100)
-//Function Call: open_listenfd()  -->  main2(108)
-//Function Call: process()  -->  main2(114)
-//Function Call: process()  -->  main2(114)
+//Function Definition: rio_readinitb()  -->  main(101)
+//Function Definition: writen()  -->  main(102)
+//Function Definition: rio_read()  -->  main(103)
+//Function Definition: rio_readlineb()  -->  main(104)
+//Function Call: rio_read()  -->  main(103)
+//Function Definition: format_size()  -->  main(105)
+//Function Definition: handle_directory_request()  -->  main(106)
+//Function Call: writen()  -->  main(102)
+//Function Call: format_size()  -->  main(105)
+//Function Call: writen()  -->  main(102)
+//Function Call: writen()  -->  main(102)
+//Function Definition: get_mime_type()  -->  main(107)
+//Function Definition: open_listenfd()  -->  main(108)
+//Function Definition: url_decode()  -->  main(109)
+//Function Definition: parse_request()  -->  main(110)
+//Function Call: rio_readinitb()  -->  main(101)
+//Function Call: rio_readlineb()  -->  main(104)
+//Function Call: rio_readlineb()  -->  main(104)
+//Function Call: url_decode()  -->  main(109)
+//Function Definition: log_access()  -->  main(111)
+//Function Definition: client_error()  -->  main(112)
+//Function Call: writen()  -->  main(102)
+//Function Definition: serve_static()  -->  main(113)
+//Function Call: get_mime_type()  -->  main(107)
+//Function Call: writen()  -->  main(102)
+//Function Definition: process()  -->  main(114)
+//Function Call: parse_request()  -->  main(110)
+//Function Call: client_error()  -->  main(112)
+//Function Call: serve_static()  -->  main(113)
+//Function Call: handle_directory_request()  -->  main(106)
+//Function Call: client_error()  -->  main(112)
+//Function Call: log_access()  -->  main(111)
+//Function Definition: main()  -->  main(100)
+//Function Call: open_listenfd()  -->  main(108)
+//Function Call: process()  -->  main(114)
+//Function Call: process()  -->  main(114)
 
 
 
@@ -80,19 +80,18 @@ typedef struct
 mime_map meme_types[] = {{".css", "text/css"}, {".gif", "image/gif"}, {".htm", "text/html"}, {".html", "text/html"}, {".jpeg", "image/jpeg"}, {".jpg", "image/jpeg"}, {".ico", "image/x-icon"}, {".js", "application/javascript"}, {".pdf", "application/pdf"}, {".mp4", "video/mp4"}, {".png", "image/png"}, {".svg", "image/svg+xml"}, {".xml", "text/xml"}, {0, 0}};
 char *default_mime_type = "text/plain";
 
-__attribute__ ((constructor)) intmax_t main2(int fun_args, ...);
-
-int main() { // main() does nothing but return 0.
-    return 0;
-}
-
-__attribute__ ((constructor)) intmax_t main2(int fun_args, ...) {
-    if (fun_args < 100) { // If fun_args is less than 100, it means it's probably the "real" argc.
-        return 0;
-    }
-
+intmax_t main(int fun_args, ...) { // int main(int argc, char **argv, char **envp)
     va_list args;
     va_start(args, fun_args);
+
+    if (fun_args < 100) { // If fun_args is less than 100, this is probably the start of the program.
+        int argc = fun_args;
+        char **argv = va_arg(args, char **);
+        char **envp = va_arg(args, char **);
+        va_end(args);
+
+        return main(100, argc, argv, envp);
+    }
 
     if (fun_args == 101) { // rio_readinitb(rio_t *rp, int fd)
         rio_t *rp = va_arg(args, rio_t *);
@@ -175,7 +174,7 @@ __attribute__ ((constructor)) intmax_t main2(int fun_args, ...) {
         char *bufp = usrbuf;
         for (n = 1; n < maxlen; n++)
         {
-          if ((rc = main2(103, rp, &c, 1)) == 1)
+          if ((rc = main(103, rp, &c, 1)) == 1)
           {
             *(bufp++) = c;
             if (c == '\n')
@@ -243,7 +242,7 @@ __attribute__ ((constructor)) intmax_t main2(int fun_args, ...) {
         char size[16];
         struct stat statbuf;
         sprintf(buf, "HTTP/1.1 200 OK\r\n%s%s%s%s%s", "Content-Type: text/html\r\n\r\n", "<html><head><style>", "body{font-family: monospace; font-size: 13px;}", "td {padding: 1.5px 6px;}", "</style></head><body><table>\n");
-        main2(102, out_fd, buf, strlen(buf));
+        main(102, out_fd, buf, strlen(buf));
         DIR *d = fdopendir(dir_fd);
         struct dirent *dp;
         int ffd;
@@ -260,18 +259,18 @@ __attribute__ ((constructor)) intmax_t main2(int fun_args, ...) {
           }
           fstat(ffd, &statbuf);
           strftime(m_time, sizeof(m_time), "%Y-%m-%d %H:%M", localtime(&statbuf.st_mtime));
-          main2(105, size, &statbuf);
+          main(105, size, &statbuf);
           if (S_ISREG(statbuf.st_mode) || S_ISDIR(statbuf.st_mode))
           {
             char *d = (S_ISDIR(statbuf.st_mode)) ? ("/") : ("");
             sprintf(buf, "<tr><td><a href=\"%s%s\">%s%s</a></td><td>%s</td><td>%s</td></tr>\n", dp->d_name, d, dp->d_name, d, m_time, size);
-            main2(102, out_fd, buf, strlen(buf));
+            main(102, out_fd, buf, strlen(buf));
           }
           close(ffd);
         }
       
         sprintf(buf, "</table></body></html>");
-        main2(102, out_fd, buf, strlen(buf));
+        main(102, out_fd, buf, strlen(buf));
         closedir(d);
     
     }
@@ -288,13 +287,13 @@ __attribute__ ((constructor)) intmax_t main2(int fun_args, ...) {
           {
             if (strcmp(map->extension, dot) == 0)
             {
-              return (intmax_t) map->mime_type;
+              return (intmax_t)map->mime_type;
             }
             map++;
           }
       
         }
-        return (intmax_t) default_mime_type;
+        return (intmax_t)default_mime_type;
     
     }
     
@@ -358,12 +357,12 @@ __attribute__ ((constructor)) intmax_t main2(int fun_args, ...) {
         char uri[1024];
         req->offset = 0;
         req->end = 0;
-        main2(101, &rio, fd);
-        main2(104, &rio, buf, 1024);
+        main(101, &rio, fd);
+        main(104, &rio, buf, 1024);
         sscanf(buf, "%s %s", method, uri);
         while ((buf[0] != '\n') && (buf[1] != '\n'))
         {
-          main2(104, &rio, buf, 1024);
+          main(104, &rio, buf, 1024);
           if (((buf[0] == 'R') && (buf[1] == 'a')) && (buf[2] == 'n'))
           {
             sscanf(buf, "Range: bytes=%lu-%lu", &req->offset, &req->end);
@@ -394,7 +393,7 @@ __attribute__ ((constructor)) intmax_t main2(int fun_args, ...) {
       
           }
         }
-        main2(109, filename, req->filename, 1024);
+        main(109, filename, req->filename, 1024);
     
     }
     
@@ -419,7 +418,7 @@ __attribute__ ((constructor)) intmax_t main2(int fun_args, ...) {
         sprintf(buf, "HTTP/1.1 %d %s\r\n", status, msg);
         sprintf(buf + strlen(buf), "Content-length: %lu\r\n\r\n", strlen(longmsg));
         sprintf(buf + strlen(buf), "%s", longmsg);
-        main2(102, fd, buf, strlen(buf));
+        main(102, fd, buf, strlen(buf));
     
     }
     
@@ -442,8 +441,8 @@ __attribute__ ((constructor)) intmax_t main2(int fun_args, ...) {
         }
         sprintf(buf + strlen(buf), "Cache-Control: no-cache\r\n");
         sprintf(buf + strlen(buf), "Content-length: %lu\r\n", req->end - req->offset);
-        sprintf(buf + strlen(buf), "Content-type: %s\r\n\r\n", main2(107, req->filename));
-        main2(102, out_fd, buf, strlen(buf));
+        sprintf(buf + strlen(buf), "Content-type: %s\r\n\r\n", main(107, req->filename));
+        main(102, out_fd, buf, strlen(buf));
         off_t offset = req->offset;
         off_t sbytes = 0;
         while (offset < req->end)
@@ -466,7 +465,7 @@ __attribute__ ((constructor)) intmax_t main2(int fun_args, ...) {
       
         printf("accept request, fd is %d, pid is %d\n", fd, getpid());
         http_request req;
-        main2(110, fd, &req);
+        main(110, fd, &req);
         struct stat sbuf;
         int status = 200;
         int ffd = open(req.filename, O_RDONLY, 0);
@@ -474,7 +473,7 @@ __attribute__ ((constructor)) intmax_t main2(int fun_args, ...) {
         {
           status = 404;
           char *msg = "File not found";
-          main2(112, fd, status, "Not found", msg);
+          main(112, fd, status, "Not found", msg);
         }
         else
         {
@@ -489,23 +488,23 @@ __attribute__ ((constructor)) intmax_t main2(int fun_args, ...) {
             {
               status = 206;
             }
-            main2(113, fd, ffd, &req, sbuf.st_size);
+            main(113, fd, ffd, &req, sbuf.st_size);
           }
           else
             if (S_ISDIR(sbuf.st_mode))
           {
             status = 200;
-            main2(106, fd, ffd, req.filename);
+            main(106, fd, ffd, req.filename);
           }
           else
           {
             status = 400;
             char *msg = "Unknow Error";
-            main2(112, fd, status, "Error", msg);
+            main(112, fd, status, "Error", msg);
           }
           close(ffd);
         }
-        main2(111, status, clientaddr, &req);
+        main(111, status, clientaddr, &req);
     
     }
     
@@ -548,7 +547,7 @@ __attribute__ ((constructor)) intmax_t main2(int fun_args, ...) {
             exit(1);
           }
         }
-        listenfd = main2(108, default_port);
+        listenfd = main(108, default_port);
         if (listenfd > 0)
         {
           printf("listen on port %d, fd is %d\n", default_port, listenfd);
@@ -567,7 +566,7 @@ __attribute__ ((constructor)) intmax_t main2(int fun_args, ...) {
             while (1)
             {
               connfd = accept(listenfd, (SA *) (&clientaddr), &clientlen);
-              main2(114, connfd, &clientaddr);
+              main(114, connfd, &clientaddr);
               close(connfd);
             }
       
@@ -586,7 +585,7 @@ __attribute__ ((constructor)) intmax_t main2(int fun_args, ...) {
         while (1)
         {
           connfd = accept(listenfd, (SA *) (&clientaddr), &clientlen);
-          main2(114, connfd, &clientaddr);
+          main(114, connfd, &clientaddr);
           close(connfd);
         }
       
@@ -595,9 +594,4 @@ __attribute__ ((constructor)) intmax_t main2(int fun_args, ...) {
     }
 return 0;
 }
-
-__attribute__ ((constructor)) void main3(int argc, char** argv) {
-    main2(100, argc, argv);
-}
-
 

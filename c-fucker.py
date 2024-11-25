@@ -41,11 +41,11 @@ class FunctionTransformer(c_ast.NodeVisitor):
         if func_name == "main":
             transformed_func = f"if (fun_args == 100) {{ // {func_name}("
             self.transformed_funcs.append([func_name, 100])
-            print(f"//Function Definition: {func_name}()  -->  main2(100)")
+            print(f"//Function Definition: {func_name}()  -->  main(100)")
         else:
             transformed_func = f"if (fun_args == {self.fun_args}) {{ // {func_name}("
             self.transformed_funcs.append([func_name, self.fun_args])
-            print(f"//Function Definition: {func_name}()  -->  main2({self.fun_args})")
+            print(f"//Function Definition: {func_name}()  -->  main({self.fun_args})")
             self.fun_args += 1
 
         arg_types = []
@@ -88,8 +88,8 @@ class FunctionTransformer(c_ast.NodeVisitor):
         if isinstance(node, FuncCall):
             for transformed_func in self.transformed_funcs:
                 if transformed_func[0] == node.name.name:
-                    print(f"//Function Call: {node.name.name}()  -->  main2({transformed_func[1]})")
-                    node.name.name = "main2"
+                    print(f"//Function Call: {node.name.name}()  -->  main({transformed_func[1]})")
+                    node.name.name = "main"
                     if node.args:
                         args = node.args.exprs
                         new_args = [Constant('int', str(transformed_func[1]))]
@@ -146,27 +146,21 @@ def main(input_file):
     transformed_code = '\n'.join(transformed_code)
 
     code_beginning = """
-__attribute__ ((constructor)) intmax_t main2(int fun_args, ...);
-
-int main() { // main() does nothing but return 0.
-    return 0;
-}
-
-__attribute__ ((constructor)) intmax_t main2(int fun_args, ...) {
-    if (fun_args < 100) { // If fun_args is less than 100, it means it's probably the "real" argc.
-        return 0;
-    }
-
+intmax_t main(int fun_args, ...) { // int main(int argc, char **argv, char **envp)
     va_list args;
     va_start(args, fun_args);
 
-"""
-    code_ending = """
-__attribute__ ((constructor)) void main3(int argc, char** argv) {
-    main2(100, argc, argv);
-}""" # XXX: We could probably turn main3 into a variadic function too and call main3 from main2 instead of main2 every time.
+    if (fun_args < 100) { // If fun_args is less than 100, this is probably the start of the program.
+        int argc = fun_args;
+        char **argv = va_arg(args, char **);
+        char **envp = va_arg(args, char **);
+        va_end(args);
 
-    print(code_beginning + transformed_code + "\nreturn 0;\n}\n" + code_ending) # Why does not returning cause uninitalized memory read?
+        return main(100, argc, argv, envp);
+    }
+
+"""
+    print(code_beginning + transformed_code + "\nreturn 0;\n}\n")
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
