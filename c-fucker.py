@@ -166,7 +166,7 @@ __attribute__ ((constructor)) void main3(int argc, char** argv) {
     main2(100, argc, argv);
 }""" # XXX: We could probably turn main3 into a variadic function too and call main3 from main2 instead of main2 every time.
 
-    print(code_beginning + transformed_code + "\nreturn 0;\n}\n" + code_ending) # Why does not returning cause uninitalized memory read?
+    print(code_beginning + transformed_code + "\nreturn 0;\n}\n" + code_ending)
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
