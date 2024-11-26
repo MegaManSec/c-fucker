@@ -1,1 +1,15 @@
 # PYTHONPATH=../pycparser/ python3.11 c-fucker.py examples/printdatetime.c  > examples/printdatetime-fucked.c
+
+The idea of this program is to see what happens when a C program's `main()` function does nothing, and the rest of the functionality is handled in `__attribute__ ((constructor))` functions.
+
+The whole C program is converted to one function which calls itself `main3()->main2()->main2()->main2()->main2()->...` with different parameters referring to if-blocks, to emulate a single-function.
+
+`intmax_t` type is used so promotion is possible in nearly all cases. float/double functions do not work in this case, however.
+
+The idea is to see what happens to decompilers in this case, and if it makes reverse-engineering more difficult to read.
+
+In at least the case of `tiny` in examples/, Ghidra crashes on https://dogbolt.org/.
+
+Full README will come eventually.
+
+Take a look at the `only-main` branch for a 100% `main()`-only implementation.
